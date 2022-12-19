@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: twitter-app
+  labels:
+    app: twitter-app
+spec:
+  containers:
+  - name: twitter-app
+    image: twitter-app:1.0
+    ports:
+    - containerPort: 9999
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: twitter-service
+spec:
+  type: ClusterIP
+  selector:
+    app: twitter-app
+  ports:
+  - protocol: TCP
+    port: 9999
+    targetPort: 9999

@@ -7,8 +7,9 @@ eval $(minikube -p minikube docker-env)
 K8S_SERVER=$(kubectl config view --output=jsonpath='{.clusters[].cluster.server}')
 
 ./bin/spark-submit \
-  --master k8s://$K8S_SERVER \
+  --master k8s://${K8S_SERVER} \
   --deploy-mode cluster \
+  --jars local://${SPARK_HOME}/twitter-spark-app/postgresql-42.5.1.jar \
   --name twitter-spark-app \
   --conf spark.kubernetes.container.image=spark-app:1.0 \
   --conf spark.kubernetes.context=minikube \
@@ -18,4 +19,4 @@ K8S_SERVER=$(kubectl config view --output=jsonpath='{.clusters[].cluster.server}
   --conf spark.kubernetes.authenticate.driver.serviceAccountName=pyspark-service \
   --conf spark.kubernetes.file.upload.path=/tmp \
   --conf spark.kubernetes.submission.waitAppCompletion=false \
-  local://${SPARK_HOME}/twitter-spark-app/spark-app.py
+  local://${SPARK_HOME}/twitter-spark-app/spark-sentiment.py

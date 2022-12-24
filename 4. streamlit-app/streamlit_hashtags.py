@@ -8,11 +8,6 @@ import streamlit as st
 import altair as alt
 
 load_dotenv()
-DB_NAME = os.getenv('DB_NAME')
-DB_USER = os.getenv('DB_USER')
-DB_PASS = os.getenv('DB_PASS')
-DB_HOST = os.getenv('DB_HOST')
-DB_PORT = os.getenv('DB_PORT')
 
 def pg_to_df(conn, query, cols):
     cur = conn.cursor()
@@ -35,21 +30,18 @@ st.set_page_config(
     layout="wide",
 )
 
-st.write("""
-
-# Trending Twitter Hashtags using Spark Structured Streaming: #FIFAWorldCup 🏆⚽🏆
-
-""")
+st.write(""" # Twitter API v2 and Spark Structured Streaming 💥 : #FIFAWorldCup 🏆⚽🏆 """)
+st.markdown(""" # """)
 
 placeholder = st.empty()
 
 try:
   while True:
-    db_conn = psycopg2.connect(database=DB_NAME,
-          user=DB_USER,
-          password=DB_PASS,
-          host=DB_HOST,
-          port=DB_PORT,
+    db_conn = psycopg2.connect(database=os.getenv('DB_NAME'),
+          user=os.getenv('DB_USER'),
+          password=os.getenv('DB_PASS'),
+          host=os.getenv('DB_HOST'),
+          port=os.getenv('DB_PORT'),
           connect_timeout=3)
     
     with placeholder.container():
@@ -64,9 +56,9 @@ try:
                   GROUP BY hashtag ORDER BY count DESC LIMIT 20
                   '''
 
-        db_cols1 = ['hashtag', 'count']
+        top_20_total_cols = ['hashtag', 'count']
 
-        bar_chart_df = pg_to_df(db_conn, top_20_total, db_cols1)
+        bar_chart_df = pg_to_df(db_conn, top_20_total, top_20_total_cols)
 
         bar_chart = (
           alt.Chart(bar_chart_df)
@@ -75,13 +67,14 @@ try:
             alt.X('hashtag:N', axis=alt.Axis(labelAngle=-45)),
             alt.Y('count:Q'),
             alt.Color("hashtag:N"),
-            alt.Tooltip(['hashtag', 'count']),
+            alt.Tooltip(top_20_total_cols),
           )
           .interactive()
         )
 
         st.markdown(""" ### Top 20 Trending Hashtags Total 📊""")
-        st.altair_chart(bar_chart, use_container_width=True)
+        st.markdown(""" ### """)
+        st.altair_chart(bar_chart, theme=None, use_container_width=True)
 
       with fig_col2:
 
@@ -95,9 +88,9 @@ try:
                   ORDER BY t1.hashtag, t1.window
                   '''
 
-        db_cols2 = ['hashtag', 'window', 'count']
+        top_5_timeline_cols = ['hashtag', 'window', 'count']
 
-        line_chart_df = pg_to_df(db_conn, top_5_timeline, db_cols2)
+        line_chart_df = pg_to_df(db_conn, top_5_timeline, top_5_timeline_cols)
 
         line_chart = (
           alt.Chart(line_chart_df)
@@ -106,26 +99,28 @@ try:
             alt.X('window:T', axis=alt.Axis(labelAngle=-45)),
             alt.Y('count:Q'),
             alt.Color("hashtag:N"),
-            alt.Tooltip(['hashtag', 'window', 'count']),
+            alt.Tooltip(top_5_timeline_cols),
           )
           .interactive()
         )
 
         st.markdown(""" ### Top 5 Trending Hashtags Timeline 📈""")
-        st.altair_chart(line_chart, use_container_width=True)
+        st.markdown(""" ### """)
+        st.altair_chart(line_chart, theme=None, use_container_width=True)
 
       hashtags_table = '''
                 SELECT * FROM hashtags AS t1 ORDER BY t1.hashtag, t1.window
                 '''
 
-      db_cols3 = ['hashtag', 'window', 'count']
+      hashtags_table_cols = ['hashtag', 'window', 'count']
 
-      hashtags_df = pg_to_df(db_conn, hashtags_table, db_cols3)
+      hashtags_df = pg_to_df(db_conn, hashtags_table, hashtags_table_cols)
 
       st.markdown(""" ### Trending Hashtags Snapshot 🔎""")
+      st.markdown(""" ### """)
       st.dataframe(hashtags_df, use_container_width=True)
 
-      time.sleep(5)
+      time.sleep(10)
 
 except BaseException as e:
-    print(f"Error : {str(e)}")
+    print("Error : " + str(e))

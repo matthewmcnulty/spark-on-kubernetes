@@ -19,4 +19,4 @@ K8S_SERVER=$(kubectl config view --output=jsonpath='{.clusters[].cluster.server}
   --conf spark.kubernetes.authenticate.driver.serviceAccountName=pyspark-service \
   --conf spark.kubernetes.file.upload.path=/tmp \
   --conf spark.kubernetes.submission.waitAppCompletion=false \
-  local://${SPARK_HOME}/twitter-spark-app/spark-sentiment.py
+  local://${SPARK_HOME}/twitter-spark-app/spark_sentiment.py

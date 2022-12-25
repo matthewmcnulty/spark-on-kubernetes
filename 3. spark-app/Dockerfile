@@ -6,7 +6,7 @@ USER 0
 RUN mkdir ${SPARK_HOME}/twitter-spark-app
 RUN pip3 install python-dotenv vaderSentiment
 
-COPY spark-hashtags.py ${SPARK_HOME}/twitter-spark-app
+COPY spark_hashtags.py ${SPARK_HOME}/twitter-spark-app
 COPY spark-sentiment.py ${SPARK_HOME}/twitter-spark-app
 COPY .env ${SPARK_HOME}/twitter-spark-app
 COPY postgresql-42.5.1.jar ${SPARK_HOME}/twitter-spark-app

@@ -1,5 +1,7 @@
 # twitter-spark-streaming
 
+In this project, we will use the Python library Tweepy to stream tweets on a specific topic in real-time through a socket. Following that, we'll use spark-submit to start a Spark Structured Streaming application on a Minikube cluster. This application will analyse the sentiment of the Twitter stream and append the results to a PostgreSQL database table. Finally, we will create a dashboard using the Python library Streamlit to visualise the results simultaneously. 
+
 ## 1. Prequisites
 
 ### 1.1  Install Docker Desktop with WSL 2 Backend

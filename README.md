@@ -65,6 +65,8 @@ Copy the path from your preferred installation. Then open ~/.profile using nano 
 vim ~/.profile
 ```
 
+Add the following to the bottom of the script.
+
 ```bash
 export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
 export SPARK_HOME=/opt/spark

@@ -138,6 +138,11 @@ First we create a new namespace.
 
 ```bash
 kubectl create ns pyspark
+```
+
+Set it as the default namespace.
+
+```bash
 kubectl config set-context --current --namespace=pyspark
 ```
 

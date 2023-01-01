@@ -14,13 +14,13 @@ In this project, we will use the Python library Tweepy to stream tweets on a spe
 
 ### 1.3 Install Java
 
-First update your apt package index.
+Update your apt package index.
 
 ```bash
 sudo apt update -y
 ```
 
-To install the JDK, execute the following command, which will also install the JRE.
+Install the JDK with the following command.
 
 ```bash
 sudo apt install default-jdk -y
@@ -34,7 +34,7 @@ java -version
 
 ### 1.4 Install Spark
 
-Download the jar files for Spark 3.1.1 and Hadoop 3 from archive.apache.org.
+Download the jar files for Spark 3.1.1.
 
 ```bash
 wget https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz
@@ -61,7 +61,7 @@ sudo mv -f spark-3.3.1-bin-hadoop3 /opt
 sudo ln -s spark-3.3.1-bin-hadoop3 /opt/spark
 ```
 
-Copy the path from your preferred installation. Then open ~/.profile using nano or your favorite text editor.
+Copy the path from your installation. Then open ~/.profile using nano or vim.
 
 ```bash
 vim ~/.profile
@@ -76,13 +76,13 @@ export PATH=$PATH:$SPARK_HOME/bin
 export PYSPARK_PYTHON=python3
 ```
 
-Reload this file to apply the changes to your current session.
+Reload this file to apply the changes.
 
 ```bash
 source ~/.profile
 ```
 
-Verify that the environment variable is set:
+Verify that the environment variable is set.
 
 ```bash
 echo $JAVA_HOME
@@ -91,13 +91,13 @@ echo $SPARK_HOME
 
 ### 1.6 Install Minikube
 
-Download the latest Minikube package for Linux using curl.
+Download the latest Minikube package using curl.
 
 ```bash
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 ```
 
-We will use the install command to copy files into the correct directory and set permissions.
+Use the install command to copy files into the correct directory and set permissions.
 
 ```bash
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
@@ -110,7 +110,7 @@ minikube config set memory 8192
 minikube config set cpus 3
 ```
 
-We will now start the minikube cluster.
+Start the minikube cluster.
 
 ```bash
 minikube start
@@ -118,19 +118,19 @@ minikube start
 
 ### 1.7 Install Kubectl
 
-We begin by downloading the Kubectl files from using curl.
+Download the Kubectl files using curl.
 
 ```bash
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 ```
 
-Then we use the install tool to copy the files to /usr/local/bin/kubectl. We set the owner as root, the group owner as root, and the mode to 0755.
+Use the install tool to copy the files to /usr/local/bin/kubectl. We set the owner as root, the group owner as root, and the mode to 0755.
 
 ```bash
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 
-Test out Kubectl by getting all objects on the Minikube cluster in all namespaces.
+Test Kubectl by getting all objects on the Minikube cluster in all namespaces.
 
 ```bash
 kubectl get all -A
@@ -140,7 +140,7 @@ kubectl get all -A
 
 The Spark driver pod requires a service account that has the permission to create executor pods.
 
-First we create a new namespace.
+Create a new namespace.
 
 ```bash
 kubectl create ns pyspark
@@ -152,14 +152,14 @@ Set it as the default namespace.
 kubectl config set-context --current --namespace=pyspark
 ```
 
-Then we create a new service account.
+Create a new service account.
 
 ```bash
 kubectl create serviceaccount pyspark-service \
   -n pyspark
 ```
 
-Then we grant the service account access to resources in the namespace.
+Grant the service account access to resources in the namespace.
 
 ```bash
 kubectl create clusterrolebinding pyspark-clusterrole \
@@ -228,7 +228,7 @@ minikube dashboard
 
 ### 4.2 Start PostgreSQL Database
 
-Inside 1. postgresql.
+Inside 1. postgresql, start PgAdmin, PostgreSQL, and PVs / PVCs.
 
 ```bash
 kubectl apply -f .
@@ -236,7 +236,7 @@ kubectl apply -f .
 
 ### 4.3 Start Twitter Stream
 
-Inside 2. twitter-app.
+Inside 2. twitter-app, start Twitter stream socket.
 
 ```bash
 kubectl apply -f .
@@ -244,7 +244,7 @@ kubectl apply -f .
 
 ### 4.4 Start PySpark Application
 
-Inside 3. spark-app.
+Inside 3. spark-app, start the PySpark sentiment analysis application.
 
 To start the PySpark application, use the following command.
 
@@ -260,7 +260,7 @@ stop-spark-app.sh
 
 ### 4.5 Start Streamlit Dashboard
 
-Inside 4. streamlit-app.
+Inside 4. streamlit-app, start the Streamlit dashboard.
 
 Use the following command and open the given address.
 

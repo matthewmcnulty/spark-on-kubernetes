@@ -20,7 +20,7 @@ First update your apt package index.
 sudo apt update -y
 ```
 
-To install the JDK, execute the following command, which will also install the JRE:
+To install the JDK, execute the following command, which will also install the JRE.
 
 ```bash
 sudo apt install default-jdk -y

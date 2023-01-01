@@ -14,7 +14,7 @@ In this project, we will use the Python library Tweepy to stream tweets on a spe
 
 ### 1.3 Install Java
 
-First update your apt package index:
+First update your apt package index.
 
 ```bash
 sudo apt update -y
@@ -26,7 +26,7 @@ To install the JDK, execute the following command, which will also install the J
 sudo apt install default-jdk -y
 ```
 
-Verify the installations with:
+Verify the installations with the following command.
 
 ```bash
 java -version
@@ -61,7 +61,7 @@ sudo mv -f spark-3.3.1-bin-hadoop3 /opt
 sudo ln -s spark-3.3.1-bin-hadoop3 /opt/spark
 ```
 
-Copy the path from your preferred installation. Then open ~/.profile using nano or your favorite text editor:
+Copy the path from your preferred installation. Then open ~/.profile using nano or your favorite text editor.
 
 ```bash
 vim ~/.profile
@@ -76,7 +76,7 @@ export PATH=$PATH:$SPARK_HOME/bin
 export PYSPARK_PYTHON=python3
 ```
 
-Reload this file to apply the changes to your current session:
+Reload this file to apply the changes to your current session.
 
 ```bash
 source ~/.profile

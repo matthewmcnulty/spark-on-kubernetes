@@ -14,7 +14,7 @@ In this project, we will use the Python library Tweepy to stream tweets on a spe
 
 ### 1.3 Install Java
 
-To install the OpenJDK version of Java, first update your apt package index:
+First update your apt package index:
 
 ```bash
 sudo apt update -y
@@ -34,7 +34,7 @@ java -version
 
 ### 1.4 Install Spark
 
-First, download the jar files for Spark 3.1.1 and Hadoop 3 from archive.apache.org.
+Download the jar files for Spark 3.1.1 and Hadoop 3 from archive.apache.org.
 
 ```bash
 wget https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz
@@ -76,7 +76,7 @@ export PATH=$PATH:$SPARK_HOME/bin
 export PYSPARK_PYTHON=python3
 ```
 
-Now reload this file to apply the changes to your current session:
+Reload this file to apply the changes to your current session:
 
 ```bash
 source ~/.profile
@@ -91,7 +91,7 @@ echo $SPARK_HOME
 
 ### 1.6 Install Minikube
 
-Now, let’s download the latest minikube package for Linux using curl.
+Download the latest Minikube package for Linux using curl.
 
 ```bash
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -103,12 +103,14 @@ We will use the install command to copy files into the correct directory and set
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 ```
 
-Here comes the moment of truth, we will now start the minikube cluster.
+The [Running Spark on Kubernetes](https://spark.apache.org/docs/latest/running-on-kubernetes.html#prerequisites) documentation recommends at least 3 CPUs and 4g of memory.
 
 ```bash
 minikube config set memory 8192
 minikube config set cpus 3
 ```
+
+We will now start the minikube cluster.
 
 ```bash
 minikube start
@@ -116,25 +118,25 @@ minikube start
 
 ### 1.7 Install Kubectl
 
-We begin by downloading the kubectl files from using curl.
+We begin by downloading the Kubectl files from using curl.
 
 ```bash
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 ```
 
-Then we use the install tool to copy the files to /usr/local/bin/kubectl. We set the owner as root, the group owner as root and the mode to 0755.
+Then we use the install tool to copy the files to /usr/local/bin/kubectl. We set the owner as root, the group owner as root, and the mode to 0755.
 
 ```bash
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 
-Let’s test out kubectl by get all objects on the minikube cluster in all namespaces.
+Test out Kubectl by getting all objects on the Minikube cluster in all namespaces.
 
 ```bash
 kubectl get all -A
 ```
 
-## 2. Create Minikube Resources
+## 2. Enable Role-Based Access Control (RBAC)
 
 The Spark driver pod requires a service account that has the permission to create executor pods.
 
@@ -168,7 +170,7 @@ kubectl create clusterrolebinding pyspark-clusterrole \
 
 ## 3. Build Docker Images
 
-### 3.1 Point the Shell to the Minikube Docker Daemon
+### 3.1 Point Shell to the Minikube Docker Daemon
 
 ```bash
 eval $(minikube -p minikube docker-env)
@@ -277,5 +279,5 @@ minikube stop
 ### 5.2 Delete the Minikube Cluster
 
 ```bash
-minikube delete --all --purge
+minikube delete
 ```

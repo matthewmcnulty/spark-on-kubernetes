@@ -1,6 +1,6 @@
 # twitter-spark-streaming
 
-In this project, we will use the Python library Tweepy to stream tweets on a specific topic in real-time through a socket. Following that, we'll use spark-submit to start a Spark Structured Streaming application on a Minikube cluster. This application will analyse the sentiment of the Twitter stream and append the results to a PostgreSQL database table. Finally, we will create a dashboard using the Python library Streamlit to visualise the results simultaneously.
+The Python library Tweepy will be used in this project to stream tweets on a specific topic in real-time.  After that, the spark-submit command will be executed to launch a Spark application on a Minikube cluster. The results of this application's sentiment analysis of the Twitter stream will be appended to a PostgreSQL database table. Finally, the Python library Streamlit will then be used to visualise the findings in a real-time dashboard.
 
 ## 1. Prequisites
 
@@ -14,19 +14,19 @@ In this project, we will use the Python library Tweepy to stream tweets on a spe
 
 ### 1.3 Install Java
 
-Update your apt package index.
+Update the apt package index.
 
 ```bash
 sudo apt update -y
 ```
 
-Install the JDK with the following command.
+Install the JDK.
 
 ```bash
 sudo apt install default-jdk -y
 ```
 
-Verify the installations with the following command.
+Verify that Java is installed.
 
 ```bash
 java -version
@@ -61,13 +61,13 @@ sudo mv -f spark-3.3.1-bin-hadoop3 /opt
 sudo ln -s spark-3.3.1-bin-hadoop3 /opt/spark
 ```
 
-Copy the path from your installation. Then open ~/.profile using nano or vim.
+Open ~/.profile using nano or vim.
 
 ```bash
 vim ~/.profile
 ```
 
-Add the following to the bottom of the script.
+Add the following lines to the script.
 
 ```bash
 export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
@@ -82,7 +82,7 @@ Reload this file to apply the changes.
 source ~/.profile
 ```
 
-Verify that the environment variable is set.
+Verify that the environment variables are set.
 
 ```bash
 echo $JAVA_HOME
@@ -97,17 +97,17 @@ Download the latest Minikube package using curl.
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 ```
 
-Use the install command to copy files into the correct directory and set permissions.
+Use the install command to copy the files into the correct directory and set permissions.
 
 ```bash
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 ```
 
-The [Running Spark on Kubernetes](https://spark.apache.org/docs/latest/running-on-kubernetes.html#prerequisites) documentation recommends at least 3 CPUs and 4g of memory.
+The [documentation](https://spark.apache.org/docs/latest/running-on-kubernetes.html#prerequisites) recommends at least 3 CPUs and 4g of memory.
 
 ```bash
-minikube config set memory 8192
 minikube config set cpus 3
+minikube config set memory 8192
 ```
 
 Start the minikube cluster.
@@ -124,21 +124,19 @@ Download the Kubectl files using curl.
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 ```
 
-Use the install tool to copy the files to /usr/local/bin/kubectl. We set the owner as root, the group owner as root, and the mode to 0755.
+Use the install command to copy the files into /usr/local/bin/kubectl. Set the owner as root, the group owner as root, and the mode to 0755.
 
 ```bash
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 
-Test Kubectl by getting all objects on the Minikube cluster in all namespaces.
+Test Kubectl by getting all objects in the Minikube cluster in all namespaces.
 
 ```bash
 kubectl get all -A
 ```
 
 ## 2. Enable Role-Based Access Control (RBAC)
-
-The Spark driver pod requires a service account that has the permission to create executor pods.
 
 Create a new namespace.
 
@@ -220,18 +218,22 @@ docker images
 
 ### 4.1 Start Minikube Dashboard
 
-Use the following command and open the given address.
-
 ```bash
 minikube dashboard
 ```
 
 ### 4.2 Start PostgreSQL Database
 
-Inside 1. postgresql, start PgAdmin, PostgreSQL, and PVs / PVCs.
+Inside 1. postgresql, start PgAdmin and PostgreSQL.
 
 ```bash
 kubectl apply -f .
+```
+
+Access pgAdmin from outside the cluster.
+
+```bash
+minikube service pgadmin-service -n pyspark
 ```
 
 ### 4.3 Start Twitter Stream
@@ -258,14 +260,24 @@ To stop the PySpark application, use the following command.
 stop-spark-app.sh
 ```
 
+Access the Spark web user interface from outside the cluster.
+
+```bash
+minikube service spark-service -n pyspark
+```
+
 ### 4.5 Start Streamlit Dashboard
 
 Inside 4. streamlit-app, start the Streamlit dashboard.
 
-Use the following command and open the given address.
-
 ```bash
 kubectl apply -f .
+```
+
+Access the Streamlit dashboard from outside the cluster.
+
+```bash
+minikube service streamlit-service -n pyspark
 ```
 
 ## 5. Clean Up

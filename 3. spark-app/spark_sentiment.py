@@ -6,53 +6,57 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from pyspark.sql import SparkSession
 from pyspark.sql.types import FloatType, MapType, StructType, StructField, StringType, TimestampType
 
-# ================================================== 1 ====================================================
+# ================================================== Section 1 ====================================================
 
 def preprocessing(df):
     df = df \
-        .withColumn("cleaned_text", F.lower(F.col('text'))) # lower case
+        .withColumn("cleaned_text", F.lower(F.col('text'))) # Changing to lower case
 
     df = df \
-        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'(RT @[\w]*:)', ' ')) # remove twitter retweets
+        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'(RT @[\w]*:)', ' ')) # Removing twitter retweets
 
     df = df \
-        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'(@[A-Za-z0-9_]+)', ' ')) # remove twitter handles
+        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'(@[A-Za-z0-9_]+)', ' ')) # Removing twitter handles
 
     df = df \
-        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'(#[A-Za-z0-9_]+)', ' ')) # remove twitter hashtags
+        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'(#[A-Za-z0-9_]+)', ' ')) # Removing twitter hashtags
 
     df = df \
-        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'https?://[A-Za-z0-9./]*', ' ')) # remove url links
+        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'https?://[A-Za-z0-9./]*', ' ')) # Removing url links
 
     df = df \
-        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'([^A-Za-z0-9 ])', ' ')) # remove special characters
+        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'([^A-Za-z0-9 ])', ' ')) # Removing special characters
 
     df = df \
-        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'(\s+[A-Za-z]\s+)', ' ')) # remove single characters
+        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'(\s+[A-Za-z]\s+)', ' ')) # Removing single characters
 
     df = df \
-        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'\s+ ', ' ')) # remove whitespace
+        .withColumn("cleaned_text", F.regexp_replace('cleaned_text', r'\s+ ', ' ')) # Removing whitespace
 
     return df
 
-# ================================================== 2 ====================================================
+# ================================================== Section 2 ====================================================
 
 def sentiment_detection(text):
+    # Quantifying the polarity of the text within a tweet using VADER function
     return SentimentIntensityAnalyzer().polarity_scores(text)
 
 def sentiment_classification(df):
-    # sentiment detection
+    # Using a user-defined function to use the above VADER function within PySpark
     sentiment_detection_udf = F.udf(sentiment_detection, MapType(StringType(),FloatType(),False))
 
+    # Appending the cleaned text as a column to the PySpark dataframe
     df = df \
         .withColumn("vader", sentiment_detection_udf("cleaned_text"))
 
+    # Appending the polarity scores as columns to the PySpark dataframe
     df = df \
         .withColumn("neg",df.vader["neg"].cast(FloatType())) \
         .withColumn("neu",df.vader["neu"].cast(FloatType())) \
         .withColumn("pos",df.vader["pos"].cast(FloatType())) \
         .withColumn("compound",df.vader["compound"].cast(FloatType()))
 
+    # Categorising the polarity scores as either positive, negative, or neutral and appending it as a column to the PySpark dataframe
     df = df \
         .withColumn("sentiment", F.when(df.compound <= -0.05, "negative").when(df.compound >= 0.05, "positive").otherwise("neutral"))
 
@@ -61,14 +65,16 @@ def sentiment_classification(df):
 
     return df
 
-# ================================================== 3 ====================================================
+# ================================================== Section 3 ====================================================
 
 def batch_hashtags(df, epoch_id):
     print("batch_hashtags(df, epoch_id):")
 
+    # Preprocessing and classifying the sentiment of each mini batch
     df = preprocessing(df)
     df = sentiment_classification(df)
 
+    # Connecting to the database with the JDBC driver and appending the data to the tweets table
     df \
         .write \
         .format("jdbc") \
@@ -80,21 +86,25 @@ def batch_hashtags(df, epoch_id):
         .mode("append") \
         .save()
 
-# ================================================== 4 ====================================================
+# ================================================== Section 4 ====================================================
 
 if __name__ == "__main__":
+    # Loading the environment variables
     load_dotenv()
 
+    # Creating the SparkSession
     spark = SparkSession \
         .builder \
         .appName("SparkStreaming") \
         .getOrCreate()
 
+    # Defining the schema of the incoming JSON string
     schema = StructType([ 
         StructField("text", StringType(), True),
         StructField("created_at" , TimestampType(), True)
         ])
 
+    # Consuming the data stream from the twitter_app.py socket
     tweets_df = spark \
         .readStream \
         .format("socket") \
@@ -103,6 +113,7 @@ if __name__ == "__main__":
         .load() \
         .select(F.from_json(F.col("value").cast("string"), schema).alias("tmp")).select("tmp.*")
 
+    # Starting to process the stream in mini batches every ten seconds
     q1 = tweets_df \
         .writeStream \
         .outputMode("append") \

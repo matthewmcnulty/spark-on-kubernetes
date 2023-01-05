@@ -7,8 +7,10 @@ import time
 import streamlit as st
 import altair as alt
 
+# Loading the environment variables
 load_dotenv()
 
+# Function for executing a SQL query and loading the results as a Pandas df
 def pg_to_df(conn, query, cols):
     cur = conn.cursor()
     try:
@@ -24,15 +26,18 @@ def pg_to_df(conn, query, cols):
     df = pd.DataFrame(result, columns=cols)
     return df
 
+# Setting the tab title and favicon of the Streamlit dashboard
 st.set_page_config(
     page_title="Spark Structured Streaming",
     page_icon="💥",
     layout="wide",
 )
 
+# Setting the page title of the Streamlit dashboard
 st.write(""" # Twitter API v2 and Spark Structured Streaming 💥 : Christmas 🎄🎁🎄 """)
 st.markdown(""" # """)
 
+# Allowing for visualisations to be updated in real-time
 placeholder = st.empty()
 
 try:
@@ -46,10 +51,12 @@ try:
     
     with placeholder.container():
 
+      # Dividing the dashboard into two equal spaces for each chart
       fig_col1, fig_col2 = st.columns(2)
       
       with fig_col1:
 
+        # Getting the total percentage of each sentiment category
         percent_query = '''
                   WITH t1 as (
                     SELECT sentiment, COUNT(*) AS n
@@ -63,8 +70,10 @@ try:
 
         percent_cols = ['sentiment', 'n', 'percentage']
 
+        # Querying from the database and loading as Pandas df
         percent_df = pg_to_df(db_conn, percent_query, percent_cols)
 
+        # Creating a donut chart
         percent_chart = (
           alt.Chart(percent_df)
           .mark_arc(innerRadius=125)
@@ -82,6 +91,7 @@ try:
 
       with fig_col2:
 
+        # Getting the total count of each sentiment category per minute
         count_query = '''
                   WITH t1 as (
                     SELECT *, date_trunc('minute', created_at) AS truncated_created_at
@@ -96,8 +106,10 @@ try:
 
         count_cols = ['sentiment', 'n', 'truncated_created_at']
 
+        # Querying from the database and loading as Pandas df
         count_df = pg_to_df(db_conn, count_query, count_cols)
 
+        # Creating a time-series chart
         count_chart = (
           alt.Chart(count_df)
           .mark_line()
@@ -115,6 +127,7 @@ try:
 
         st.altair_chart(count_chart, theme=None, use_container_width=True)
 
+      # Getting all of the tweets belonging to each sentiment category
       negative_tweets = '''
                       SELECT text, created_at, sentiment, compound FROM tweets WHERE sentiment = 'negative' ORDER BY created_at DESC;;
                       '''
@@ -127,12 +140,15 @@ try:
 
       tweets_cols = ['text', 'created_at', 'sentiment', 'compound']
 
+      # Querying from the database and loading as Pandas dfs
       negative_df = pg_to_df(db_conn, negative_tweets, tweets_cols)
       neutral_df = pg_to_df(db_conn, neutral_tweets, tweets_cols)
       positive_df = pg_to_df(db_conn, positive_tweets, tweets_cols)
 
       st.markdown(""" ### Recent Tweets 🔎""")
       st.markdown(""" ### """)
+
+      # Dividing the dashboard into three tabs for each df
       tab1, tab2, tab3 = st.tabs(["Positive Tweets", "Neutral Tweets", "Negative Tweets"])
 
       with tab1:
@@ -144,6 +160,7 @@ try:
       with tab3:
         st.dataframe(negative_df, use_container_width=True)
 
+      # Repeat every ten seconds
       time.sleep(10)
 
 except BaseException as e:

@@ -1,4 +1,4 @@
-# twitter-spark-streaming
+# Spark on Kubernetes: An end-to-end Streaming Data Pipeline
 
 The Python library Tweepy will be used in this project to stream tweets on a specific topic in real-time.  After that, the spark-submit command will be executed to launch a Spark application on a Minikube cluster. The results of this application's sentiment analysis of the Twitter stream will be appended to a PostgreSQL database table. Finally, the Python library Streamlit will then be used to visualise the findings in a real-time dashboard.
 
@@ -241,12 +241,16 @@ minikube service pgadmin-service -n pyspark
 Inside 2. twitter-app, start Twitter stream socket.
 
 ```bash
-kubectl apply -f .
+kubectl apply -f twitter-app.yaml
 ```
 
 ### 4.4 Start PySpark Application
 
 Inside 3. spark-app, start the PySpark sentiment analysis application.
+
+```bash
+kubectl apply -f spark-app.yaml
+```
 
 To start the PySpark application, use the following command.
 
@@ -260,7 +264,7 @@ To stop the PySpark application, use the following command.
 stop-spark-app.sh
 ```
 
-Access the Spark web user interface from outside the cluster.
+Access Spark web user interface from outside the cluster.
 
 ```bash
 minikube service spark-service -n pyspark
@@ -271,7 +275,7 @@ minikube service spark-service -n pyspark
 Inside 4. streamlit-app, start the Streamlit dashboard.
 
 ```bash
-kubectl apply -f .
+kubectl apply -f streamlit-app.yaml
 ```
 
 Access the Streamlit dashboard from outside the cluster.

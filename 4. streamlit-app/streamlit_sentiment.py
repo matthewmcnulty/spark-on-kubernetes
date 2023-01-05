@@ -34,7 +34,7 @@ st.set_page_config(
 )
 
 # Setting the page title of the Streamlit dashboard
-st.write(""" # Twitter API v2 and Spark Structured Streaming 💥 : Christmas 🎄🎁🎄 """)
+st.write(""" # Twitter API v2 and Spark Structured Streaming 💥 : Christmas 🎄🎁 """)
 st.markdown(""" # """)
 
 # Allowing for visualisations to be updated in real-time

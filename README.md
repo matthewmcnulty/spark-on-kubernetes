@@ -246,22 +246,22 @@ kubectl apply -f twitter-app.yaml
 
 ### 4.4 Start PySpark Application
 
-Inside 3. spark-app, start the PySpark sentiment analysis application.
+Inside 3. spark-app, start the Spark service.
 
 ```bash
-kubectl apply -f spark-app.yaml
+kubectl apply -f spark-service.yaml
 ```
 
 To start the PySpark application, use the following command.
 
 ```bash
-start-spark-app.sh
+./start-spark-app.sh
 ```
 
 To stop the PySpark application, use the following command.
 
 ```bash
-stop-spark-app.sh
+./stop-spark-app.sh
 ```
 
 Access Spark web user interface from outside the cluster.

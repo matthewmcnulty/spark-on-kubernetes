@@ -15,6 +15,7 @@ K8S_SERVER=$(kubectl config view --output=jsonpath='{.clusters[].cluster.server}
   --conf spark.kubernetes.context=minikube \
   --conf spark.kubernetes.namespace=pyspark \
   --conf spark.kubernetes.driver.pod.name=pyspark-driver \
+  --conf spark.kubernetes.driver.label.app=spark-app \
   --conf spark.executor.instances=1 \
   --conf spark.kubernetes.authenticate.driver.serviceAccountName=pyspark-service \
   --conf spark.kubernetes.file.upload.path=/tmp \

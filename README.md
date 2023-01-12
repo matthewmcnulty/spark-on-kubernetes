@@ -1,6 +1,6 @@
-# Spark on Kubernetes: An end-to-end Streaming Data Pipeline
+# [Spark on Kubernetes: An end-to-end Streaming Data Pipeline](https://medium.com/@mattjoe182/38213826ee71)
 
-The Python library Tweepy will be used in this project to stream tweets on a specific topic in real-time.  After that, the spark-submit command will be executed to launch a Spark application on a Minikube cluster. The results of this application's sentiment analysis of the Twitter stream will be appended to a PostgreSQL database table. Finally, the Python library Streamlit will then be used to visualise the findings in a real-time dashboard.
+The Python library Tweepy will be used in this project to stream tweets on a specific topic in real-time. After that, the spark-submit command will be executed to launch a Spark application on a Minikube cluster. The results of this application’s sentiment analysis of the Twitter stream will be appended to a PostgreSQL database table. Finally, the Python library Streamlit will then be used to visualise the findings in a real-time dashboard.
 
 ## 1. Prequisites
 
@@ -168,13 +168,13 @@ kubectl create clusterrolebinding pyspark-clusterrole \
 
 ## 3. Build Docker Images
 
-### 3.1 Point Shell to the Minikube Docker Daemon
+Point the terminal to the Minikube Docker daemon.
 
 ```bash
 eval $(minikube -p minikube docker-env)
 ```
 
-### 3.2 Build PySpark Image
+### 3.1 Build PySpark Image
 
 ```bash
 cd $SPARK_HOME
@@ -188,21 +188,21 @@ cd $SPARK_HOME
   build
 ```
 
-### 3.3 Build Application Images
+### 3.2 Build Application Images
 
-Inside 2. twitter-app.
+Inside '2. twitter-app'.
 
 ```bash
 docker build -t twitter-app:1.0 .
 ```
 
-Inside 3. spark-app.
+Inside '3. spark-app'.
 
 ```bash
 docker build -t spark-app:1.0 .
 ```
 
-Inside 4. streamlit-app.
+Inside '4. streamlit-app'.
 
 ```bash
 docker build -t streamlit-app:1.0 .
@@ -216,15 +216,15 @@ docker images
 
 ## 4. Deploy to Minikube
 
-### 4.1 Start Minikube Dashboard
+Start Minikube dashboard.
 
 ```bash
 minikube dashboard
 ```
 
-### 4.2 Start PostgreSQL Database
+### 4.1 PostgreSQL and pgAdmin Deployment
 
-Inside 1. postgresql, start PgAdmin and PostgreSQL.
+Inside '1. postgresql', start PgAdmin and PostgreSQL.
 
 ```bash
 kubectl apply -f .
@@ -236,43 +236,43 @@ Access pgAdmin from outside the cluster.
 minikube service pgadmin-service -n pyspark
 ```
 
-### 4.3 Start Twitter Stream
+### 4.2 Tweepy Deployment
 
-Inside 2. twitter-app, start Twitter stream socket.
+Inside '2. twitter-app', start Twitter stream socket.
 
 ```bash
 kubectl apply -f twitter-app.yaml
 ```
 
-### 4.4 Start PySpark Application
+### 4.3 PySpark Deployment
 
-Inside 3. spark-app, start the Spark service.
+Inside '3. spark-app', start the Spark service.
 
 ```bash
 kubectl apply -f spark-service.yaml
 ```
 
-To start the PySpark application, use the following command.
+To start the PySpark application, run the following command.
 
 ```bash
 ./start-spark-app.sh
 ```
 
-To stop the PySpark application, use the following command.
+To stop the PySpark application, run the following command.
 
 ```bash
 ./stop-spark-app.sh
 ```
 
-Access Spark web user interface from outside the cluster.
+Access the Spark web user interface from outside the cluster.
 
 ```bash
 minikube service spark-service -n pyspark
 ```
 
-### 4.5 Start Streamlit Dashboard
+### 4.4 Streamlit Deployment
 
-Inside 4. streamlit-app, start the Streamlit dashboard.
+Inside '4. streamlit-app', start the Streamlit dashboard.
 
 ```bash
 kubectl apply -f streamlit-app.yaml

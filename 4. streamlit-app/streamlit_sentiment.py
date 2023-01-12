@@ -129,13 +129,13 @@ try:
 
       # Getting all of the tweets belonging to each sentiment category
       negative_tweets = '''
-                      SELECT text, created_at, sentiment, compound FROM tweets WHERE sentiment = 'negative' ORDER BY created_at DESC;;
+                      SELECT text, created_at, sentiment, compound FROM tweets WHERE sentiment = 'negative' ORDER BY created_at DESC;
                       '''
       neutral_tweets = '''
-                      SELECT text, created_at, sentiment, compound FROM tweets WHERE sentiment = 'neutral' ORDER BY created_at DESC;;
+                      SELECT text, created_at, sentiment, compound FROM tweets WHERE sentiment = 'neutral' ORDER BY created_at DESC;
                       '''
       positive_tweets = '''
-                      SELECT text, created_at, sentiment, compound FROM tweets WHERE sentiment = 'positive' ORDER BY created_at DESC;;
+                      SELECT text, created_at, sentiment, compound FROM tweets WHERE sentiment = 'positive' ORDER BY created_at DESC;
                       '''
 
       tweets_cols = ['text', 'created_at', 'sentiment', 'compound']

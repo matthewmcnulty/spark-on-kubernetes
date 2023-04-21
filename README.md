@@ -1,4 +1,4 @@
-# [Spark on Kubernetes: An end-to-end Streaming Data Pipeline](https://medium.com/@mattjoe182/38213826ee71)
+# [Spark on Kubernetes: An end-to-end Streaming Data Pipeline](https://www.cropway.com/spark-on-kubernetes/)
 
 The Python library Tweepy will be used in this project to stream tweets on a specific topic in real-time. After that, the spark-submit command will be executed to launch a Spark application on a Minikube cluster. The results of this application’s sentiment analysis of the Twitter stream will be appended to a PostgreSQL database table. Finally, the Python library Streamlit will then be used to visualise the findings in a real-time dashboard.
 
